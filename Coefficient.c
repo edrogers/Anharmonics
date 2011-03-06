@@ -1,4 +1,5 @@
 #include "Coefficient.h"
+
 using namespace std;
 
 Coefficient::Coefficient(float numericalFactor,
@@ -8,7 +9,7 @@ Coefficient::Coefficient(float numericalFactor,
   fAlphas = alphas;
 }
 
-Coefficient& Coefficient::operator*=(const Coefficient& rhs);
+Coefficient& Coefficient::operator*=(const Coefficient& rhs)
 {
   vector<unsigned int> rhsAlphas = rhs.getAlphas();
   fAlphas.insert(fAlphas.end(),
@@ -20,11 +21,21 @@ Coefficient& Coefficient::operator*=(const Coefficient& rhs);
   return *this;
 }
 
-const Coefficient& Coefficient::operator*(const Coefficient& rhs) const
+const Coefficient Coefficient::operator*(const Coefficient& rhs) const
 {
   Coefficient output = *this;
   output*=rhs;
   return output;
+}
+
+bool Coefficient::isUnity() const
+{
+  if ((fNumericalFactor == 1.0) &&
+      (fAlphas.size() == 0))
+    {
+      return true;
+    }
+  return false;
 }
 
 void Coefficient::orderAlphas()

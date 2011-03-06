@@ -2,6 +2,7 @@
 #define COEFFICIENT_H
 
 #include <vector>
+#include <iostream>
 
 class Coefficient
 {
@@ -14,10 +15,11 @@ class Coefficient
 	      std::vector<unsigned int> alphas);
   
   Coefficient& operator*=(const Coefficient& rhs);
-  const Coefficient& operator*(const Coefficient& rhs) const;
+  const Coefficient operator*(const Coefficient& rhs) const;
 
-  float getNumericalFactor() { return fNumericalFactor; };
-  std::vector<unsigned int> getAlphas() { return fAlphas; };
+  float getNumericalFactor() const { return fNumericalFactor; };
+  std::vector<unsigned int> getAlphas() const { return fAlphas; };
+  bool isUnity() const;
 
   void orderAlphas();
 

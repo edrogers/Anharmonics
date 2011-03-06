@@ -1,4 +1,5 @@
 #include "Term.h"
+
 using namespace std;
 
 Term::Term(vector<char> operators,
@@ -63,20 +64,11 @@ Term& Term::operator*=(const Term& rhs)
   return *this;
 }
 
-const Term& Term::operator*(const Term& rhs) const
+const Term Term::operator*(const Term& rhs) const
 {
   Term outputTerm = *this;
   outputTerm*=rhs;
   return outputTerm;
-}
-
-const Polynomial& Term::operator+(const Term& rhs) const
-{
-  vector<Term> polynomialTerms;
-  polynomialTerms.push_back(*this);
-  polynomialTerms.push_back(rhs);
-  Polynomial outputPolynomial(polynomialTerms);
-  return outputPolynomial;
 }
 
 void Term::setOperators(vector<char> operators)
@@ -101,6 +93,7 @@ void Term::setOperators(vector<char> operators)
 
 bool Term::isNormalOrdered()
 {
+  if (fOperators.size() < 2) return true;
   for (vector<char>::iterator it = fOperators.begin();
        it < fOperators.end()-1; it++) 
     {
@@ -113,14 +106,14 @@ bool Term::isNormalOrdered()
   return true;
 }
 
-Polynomial Term::normalOrder()
+vector<Term> Term::normalOrder()
 {
+  vector<Term> output;
+
   if (this->isNormalOrdered()) 
     {
-      vector<Term> outputPolynomialVector;
-      outputPolynomialVector.push_back(*this);
-      Polynomial myPolynomial(outputPolynomialVector);
-      return myPolynomial;
+      output.push_back(*this);
+      return output;
     }
   vector<char> firstTermOperators;
   vector<char> secondTermOperators;
@@ -137,8 +130,10 @@ Polynomial Term::normalOrder()
 	  firstTermOperators.push_back('B');
 	  firstTermOperators.push_back('A');
 
-	  firstTermOperators.insert (it+2,fOperators.end());
-	  secondTermOperators.insert(it+2,fOperators.end());
+	  firstTermOperators.insert (firstTermOperators.end(),
+				     it+2,fOperators.end());
+	  secondTermOperators.insert(secondTermOperators.end(),
+				     it+2,fOperators.end());
 	  
 	  break;
 	}
@@ -151,11 +146,17 @@ Polynomial Term::normalOrder()
 		  fCoefficients,
 		  fOrderInLambda);
 
-  Polynomial orderedFirstPolynomial =  firstTerm.normalOrder();
-  Polynomial orderedSecondPolynomial = secondTerm.normalOrder();
+  vector<Term> firstTermNormalOrdered  = firstTerm.normalOrder();
+  vector<Term> secondTermNormalOrdered = secondTerm.normalOrder();
 
-  Polynomial outputPolynomial = orderedFirstPolynomial+orderedSecondPolynomial;
-  return outputPolynomial;
+  output.insert(output.end(),
+		firstTermNormalOrdered.begin(),
+		firstTermNormalOrdered.end());
+  output.insert(output.end(),
+		secondTermNormalOrdered.begin(),
+		secondTermNormalOrdered.end());
+		
+  return output;
 }
 
 void Term::simplifyCoefficients() 
@@ -203,18 +204,23 @@ void Term::print()
 {
   bool coefficientIsUnity = false;
   int numberOfFactors = 0;
-  if (fCoefficients.size() > 1 || 
-      fCoefficients[0].getAlphas().size() != 0 ||
-      fCoefficients[0].getNumericalFactor != 1.0) 
-    {
-      numberOfFactors++;
-    }
-  else 
+  if ((fCoefficients.size() == 1) && 
+      (fCoefficients[0].isUnity()))
     {
       coefficientIsUnity = true;
     }
+  else 
+    {
+      numberOfFactors++;
+    }
   if (fOrderInLambda != 0)    numberOfFactors++;
   if (fOperators.size() != 0) numberOfFactors++;
+
+  if (numberOfFactors == 0) 
+    {
+      cout << "1";
+      return;
+    }
 
   if (fOrderInLambda != 0)
     {
@@ -236,7 +242,7 @@ void Term::print()
 	    {
 	      cout << "+";
 	    }
-	  Coefficient.print();
+	  it->print();
 	}
       numberOfFactors--;
       cout << ")";

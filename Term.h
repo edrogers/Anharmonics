@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Polynomial.h"
+#include "Coefficient.h"
 
 class Term
 {
@@ -19,19 +19,18 @@ class Term
        int orderInLambda = 0);
 
   Term& operator*=(const Term& rhs);
-  const Term& operator*(const Term& rhs) const;
-  const Polynomial& operator+(const Term& rhs) const;
+  const Term operator*(const Term& rhs) const;
 
-  std::vector<char>         getOperators()     { return fOperators; };
-  std::vector<Coefficient>  getCoefficients()  { return fCoefficients; };
-  int                       getOrderInLambda() { return fOrderInLambda; };
+  std::vector<char>         getOperators() const     { return fOperators; };
+  std::vector<Coefficient>  getCoefficients() const  { return fCoefficients; };
+  int                       getOrderInLambda() const { return fOrderInLambda; };
 
   void setOperators    (std::vector<char> operators);
   void setCoefficients (std::vector<Coefficient>  coefficients) { fCoefficients = coefficients; };
-  void setOrderInLambda(int orderInLamdba) { fOrderInLambda = orderInLambda; };
+  void setOrderInLambda(int orderInLambda) { fOrderInLambda = orderInLambda; };
 
   bool isNormalOrdered();
-  Polynomial normalOrder();
+  std::vector<Term> normalOrder();
 
   void simplifyCoefficients();
 

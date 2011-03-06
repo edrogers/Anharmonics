@@ -2,25 +2,27 @@
 #define POLYNOMIAL_H
 
 #include <vector>
+#include <iostream>
 #include "Term.h"
 
 class Polynomial
 {
  private:
-  vector<Term> fTerms;
+  std::vector<Term> fTerms;
 
  public:
   Polynomial(std::vector<Term> terms);
 
   Polynomial& operator+=(const Polynomial& rhs);
-  const Polynomial& operator+(const Polynomial& rhs) const;
+  const Polynomial operator+(const Polynomial& rhs) const;
   Polynomial& operator*=(const Polynomial& rhs);
-  const Polynomial& operator*(const Polynomial& rhs) const;
+  const Polynomial operator*(const Polynomial& rhs) const;
 
-  std::vector<Term> getTerms() { return fTerms; };
+  std::vector<Term> getTerms() const { return fTerms; };
 
   void gatherTerms();
-
+  void simplify();
+  
   void print();
   void printTex();
 };

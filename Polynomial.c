@@ -1,4 +1,5 @@
 #include "Polynomial.h"
+
 using namespace std;
 
 Polynomial::Polynomial(vector<Term> terms)
@@ -31,7 +32,10 @@ Polynomial& Polynomial::operator*=(const Polynomial& rhs)
       for (vector<Term>::iterator it2 = fTerms.begin();
 	   it2 != fTerms.end(); it2++) 
 	{
-	  productTerms.push_back((*it1)*(*it2));
+	  Term lhs = *it1;
+	  Term rhs = *it2;
+	  Term product = lhs*rhs;
+	  productTerms.push_back(product);
 	}
     }
   fTerms = productTerms;
@@ -80,6 +84,16 @@ void Polynomial::gatherTerms()
       fTerms.erase(it1);
     }
   fTerms = gatheredTerms;
+}
+
+void Polynomial::simplify()
+{
+  gatherTerms();
+  for (vector<Term>::iterator it = fTerms.begin();
+       it != fTerms.end(); it++)
+    {
+      it->simplifyCoefficients();
+    }
 }
 
 void Polynomial::print()

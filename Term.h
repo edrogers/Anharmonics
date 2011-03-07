@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <algorithm>
 #include "Coefficient.h"
 
 class Term
@@ -16,7 +17,8 @@ class Term
  public:
   Term(std::vector<char>         operators,
        std::vector<Coefficient>  coefficients,
-       int orderInLambda = 0);
+       int orderInLambda);
+  Term(std::string inputString = "");
 
   Term& operator*=(const Term& rhs);
   const Term operator*(const Term& rhs) const;

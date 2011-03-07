@@ -9,6 +9,69 @@ Coefficient::Coefficient(float numericalFactor,
   fAlphas = alphas;
 }
 
+Coefficient::Coefficient(string inputString)
+{
+  fAlphas.clear();
+  if (inputString.length() == 0)
+    {
+      fNumericalFactor = 1.0;
+    }
+  else 
+    {
+      size_t firstAlphaLocation = inputString.find('a');
+      if (firstAlphaLocation != string::npos)
+	{
+	  if (firstAlphaLocation != 0) {
+	    string factorString = inputString.substr(0,firstAlphaLocation-1);
+	    fNumericalFactor = atof(factorString.c_str());
+	  }
+	  string alphaString = inputString.substr(firstAlphaLocation);
+	  while (alphaString.length() > 0)
+	    {
+	      size_t alphaSubstringLength = alphaString.find("*");
+	      if (alphaSubstringLength != string::npos)
+		{
+		  string alphaSubstring = alphaString.substr(0,alphaSubstringLength);
+		  size_t alphaSubstringExponentiationLocation = alphaSubstring.find('^');
+		  int exponentiation = 1;
+		  if (alphaSubstringExponentiationLocation != string::npos)
+		    {
+		      exponentiation = atoi((alphaSubstring.substr(alphaSubstringExponentiationLocation+1)).c_str());
+		    }
+		  string alphaIndex = alphaSubstring.substr(2,alphaSubstringExponentiationLocation-2);
+		  while (exponentiation > 0) 
+		    {
+		      fAlphas.push_back((unsigned int) atoi(alphaIndex.c_str()));
+		      exponentiation--;
+		    }
+		  alphaString = alphaString.substr(alphaSubstringLength+1);
+		}
+	      else
+		{
+		  string alphaSubstring = alphaString;
+		  size_t alphaSubstringExponentiationLocation = alphaSubstring.find('^');
+		  int exponentiation = 1;
+		  if (alphaSubstringExponentiationLocation != string::npos)
+		    {
+		      exponentiation = atoi((alphaSubstring.substr(alphaSubstringExponentiationLocation+1)).c_str());
+		    }
+		  string alphaIndex = alphaSubstring.substr(2,alphaSubstringExponentiationLocation-2);
+		  while (exponentiation > 0) 
+		    {
+		      fAlphas.push_back((unsigned int) atoi(alphaIndex.c_str()));
+		      exponentiation--;
+		    }
+		  alphaString.clear();
+		}
+	    }
+	}
+      else
+	{
+	  fNumericalFactor = atof(inputString.c_str());
+	}
+    }
+}
+
 Coefficient& Coefficient::operator*=(const Coefficient& rhs)
 {
   vector<unsigned int> rhsAlphas = rhs.getAlphas();
@@ -40,24 +103,7 @@ bool Coefficient::isUnity() const
 
 void Coefficient::orderAlphas()
 {
-  vector<unsigned int> orderedAlphas;
-  unsigned int iAlpha = 0;
-  while (fAlphas.size() > 0) 
-    {
-      for (vector<unsigned int>::iterator it = fAlphas.begin();
-	   it < fAlphas.end(); ) // iteration may happen at erase
-	{
-	  if ((*it) == iAlpha)
-	    {
-	      orderedAlphas.push_back(*it);
-	      fAlphas.erase(it);
-	      continue;
-	    }
-	  it++;
-	}
-      iAlpha++;
-    }
-  fAlphas = orderedAlphas;
+  sort(fAlphas.begin(), fAlphas.end());
 }
 
 void Coefficient::print()
@@ -77,7 +123,7 @@ void Coefficient::print()
 	{
 	  cout << "*";
 	}
-      cout << "a" << *it;
+      cout << "a_" << *it;
     }
 }
 

@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
+#include <algorithm>
 
 class Coefficient
 {
@@ -13,6 +15,7 @@ class Coefficient
  public:
   Coefficient(float numericalFactor,
 	      std::vector<unsigned int> alphas);
+  Coefficient(std::string inputString = "");
   
   Coefficient& operator*=(const Coefficient& rhs);
   const Coefficient operator*(const Coefficient& rhs) const;

@@ -73,18 +73,26 @@ Term::Term(string inputString)
 	      size_t coefficientLength = coefficientsStringFull.length();
 	      size_t coefficientPosition = 0;
 
-	      if  (lastPlusSignPosition  != string::npos)
+	      if (!((lastPlusSignPosition  == string::npos) &&
+		    (lastMinusSignPosition == string::npos)))
 		{
-		  coefficientLength = coefficientsStringFull.length()-lastPlusSignPosition;
-		  coefficientPosition = lastPlusSignPosition;
+		  if  (lastPlusSignPosition  != string::npos)
+		    {
+		      coefficientLength = coefficientsStringFull.length()-lastPlusSignPosition;
+		      coefficientPosition = lastPlusSignPosition;
+		      if ((lastMinusSignPosition != string::npos) && 
+			  (lastMinusSignPosition > lastPlusSignPosition))
+			{
+			  coefficientLength = coefficientsStringFull.length()-lastMinusSignPosition;
+			  coefficientPosition = lastMinusSignPosition;
+			}
+		    }
+		  else
+		    {
+		      coefficientLength = coefficientsStringFull.length()-lastMinusSignPosition;
+		      coefficientPosition = lastMinusSignPosition;
+		    }
 		}
-	      if ((lastMinusSignPosition != string::npos) && 
-		  (lastMinusSignPosition > lastPlusSignPosition))
-		{
-		  coefficientLength = coefficientsStringFull.length()-lastMinusSignPosition;
-		  coefficientPosition = lastMinusSignPosition;
-		}
-
 	      Coefficient latestCoefficient(coefficientsStringFull.substr(coefficientPosition,coefficientLength));
 	      fCoefficients.push_back(latestCoefficient);
 	      coefficientsStringFull.resize(coefficientPosition);
@@ -97,11 +105,13 @@ Term::Term(string inputString)
 	    {
 	      inputString.replace(duplicateStarLocation,2,"*");
 	    }
-	  else if (inputString.at(0) == '*')
+	  else if ((inputString.length() > 0) &&
+		   (inputString.at(0) == '*'))
 	    {
 	      inputString.replace(0,1,"");
 	    }
-	  else if (inputString.at(inputString.length()-1) == '*')
+	  else if ((inputString.length() > 0) &&
+		   (inputString.at(inputString.length()-1) == '*'))
 	    {
 	      inputString.replace(0,1,"");
 	    }
@@ -118,28 +128,37 @@ Term::Term(string inputString)
   size_t lambdaLocation = inputString.find("lambda");
   if (lambdaLocation != string::npos)
     {
-      bool lambdaIsExponentiated = (inputString.at(lambdaLocation+6) == '^');
-      if (lambdaIsExponentiated)
+      if (inputString.length() > lambdaLocation+6)
 	{
-	  size_t endOfExponentiation = inputString.find('*',lambdaLocation+7);
-	  if (endOfExponentiation != string::npos)
+	  bool lambdaIsExponentiated = (inputString.at(lambdaLocation+6) == '^');
+	  if (lambdaIsExponentiated)
 	    {
-	      string exponentiation = inputString.substr(lambdaLocation+7,endOfExponentiation-(lambdaLocation+7));
-	      inputString.replace(lambdaLocation,endOfExponentiation-lambdaLocation+1,"");
-	      fOrderInLambda = atoi(exponentiation.c_str());
+	      size_t endOfExponentiation = inputString.find('*',lambdaLocation+7);
+	      if (endOfExponentiation != string::npos)
+		{
+		  string exponentiation = inputString.substr(lambdaLocation+7,endOfExponentiation-(lambdaLocation+7));
+		  inputString.replace(lambdaLocation,endOfExponentiation-lambdaLocation+1,"");
+		  fOrderInLambda = atoi(exponentiation.c_str());
+		}
+	      else
+		{
+		  string exponentiation = inputString.substr(lambdaLocation+7,endOfExponentiation);
+		  inputString.replace(lambdaLocation,endOfExponentiation,"");
+		  fOrderInLambda = atoi(exponentiation.c_str());
+		}
 	    }
 	  else
 	    {
-	      string exponentiation = inputString.substr(lambdaLocation+7,endOfExponentiation);
-	      inputString.replace(lambdaLocation,endOfExponentiation,"");
-	      fOrderInLambda = atoi(exponentiation.c_str());
+	      fOrderInLambda = 1;
+	      inputString.replace(lambdaLocation,6,"");
+	      if ((inputString.length() > 0) && (inputString.at(0) == '*')) inputString.replace(0,1,"");
 	    }
 	}
       else
 	{
 	  fOrderInLambda = 1;
 	  inputString.replace(lambdaLocation,6,"");
-	  if (inputString.at(0) == '*') inputString.replace(0,1,"");
+	  if ((inputString.length() > 0) && (inputString.at(0) == '*')) inputString.replace(0,1,"");
 	}
     }
   else
@@ -359,7 +378,8 @@ void Term::print()
       for (vector<Coefficient>::iterator it = fCoefficients.begin();
 	   it != fCoefficients.end(); it++)
 	{
-	  if (it != fCoefficients.begin())
+	  if ((it != fCoefficients.begin()) &&
+	      (it->getNumericalFactor() >= 0))
 	    {
 	      cout << "+";
 	    }

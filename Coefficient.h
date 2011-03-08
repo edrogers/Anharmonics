@@ -22,6 +22,10 @@ class Coefficient
 
   float getNumericalFactor() const { return fNumericalFactor; };
   std::vector<unsigned int> getAlphas() const { return fAlphas; };
+
+  void setNumericalFactor(float numericalFactor)   { fNumericalFactor = numericalFactor; };
+  void setAlphas(std::vector<unsigned int> alphas) { fAlphas = alphas; };
+
   bool isUnity() const;
 
   void orderAlphas();

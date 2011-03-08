@@ -23,6 +23,29 @@ const Polynomial Polynomial::operator+(const Polynomial& rhs) const
   return output;
 }
 
+Polynomial& Polynomial::operator-=(const Polynomial& rhs)
+{
+  vector<Term> rhsTerms = rhs.getTerms();
+  Term negativeOne("(-1)");
+  vector<Term> rhsTermsNegative;
+  for (vector<Term>::iterator it = rhsTerms.begin();
+       it != rhsTerms.end(); it++)
+    {
+      rhsTermsNegative.push_back(negativeOne*(*it));
+    }
+  fTerms.insert(fTerms.end(),
+		rhsTermsNegative.begin(),
+		rhsTermsNegative.end());
+  return *this;
+}
+
+const Polynomial Polynomial::operator-(const Polynomial& rhs) const
+{
+  Polynomial output = *this;
+  output-=rhs;
+  return output;
+}
+
 Polynomial& Polynomial::operator*=(const Polynomial& rhs)
 {
   vector<Term> productTerms;
@@ -73,6 +96,12 @@ const Polynomial Polynomial::operator^(const unsigned int& rhs) const
   return output;
 }
 
+const Polynomial Polynomial::commutedWith(const Polynomial& rhs) const
+{
+  Polynomial output = (*this)*rhs-rhs*(*this);
+  return output;
+}
+
 void Polynomial::gatherTerms()
 {
   vector<Term> gatheredTerms;
@@ -114,9 +143,18 @@ void Polynomial::simplify()
 {
   gatherTerms();
   for (vector<Term>::iterator it = fTerms.begin();
-       it != fTerms.end(); it++)
+       it != fTerms.end(); )
     {
       it->simplifyCoefficients();
+      vector<Coefficient> newTermCoefficients = it->getCoefficients();
+      if (newTermCoefficients.size() == 0) 
+	{
+	  fTerms.erase(it);
+	}
+      else
+	{
+	  it++;
+	}
     }
 }
 

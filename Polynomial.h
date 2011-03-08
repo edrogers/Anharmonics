@@ -15,12 +15,16 @@ class Polynomial
 
   Polynomial& operator+=(const Polynomial& rhs);
   const Polynomial operator+(const Polynomial& rhs) const;
+  Polynomial& operator-=(const Polynomial& rhs);
+  const Polynomial operator-(const Polynomial& rhs) const;
   Polynomial& operator*=(const Polynomial& rhs);
   const Polynomial operator*(const Polynomial& rhs) const;
   Polynomial& operator^=(const unsigned int& rhs);
   const Polynomial operator^(const unsigned int& rhs) const;
 
   std::vector<Term> getTerms() const { return fTerms; };
+
+  const Polynomial commutedWith(const Polynomial& rhs) const;
 
   void gatherTerms();
   void simplify();

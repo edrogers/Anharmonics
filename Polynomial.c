@@ -26,11 +26,12 @@ const Polynomial Polynomial::operator+(const Polynomial& rhs) const
 Polynomial& Polynomial::operator*=(const Polynomial& rhs)
 {
   vector<Term> productTerms;
+  vector<Term> rhsTerms = rhs.getTerms();
   for (vector<Term>::iterator it1 = fTerms.begin();
        it1 != fTerms.end(); it1++) 
     {
-      for (vector<Term>::iterator it2 = fTerms.begin();
-	   it2 != fTerms.end(); it2++) 
+      for (vector<Term>::iterator it2 = rhsTerms.begin();
+	   it2 != rhsTerms.end(); it2++) 
 	{
 	  Term lhs = *it1;
 	  Term rhs = *it2;
@@ -46,6 +47,29 @@ const Polynomial Polynomial::operator*(const Polynomial& rhs) const
 {
   Polynomial output = *this;
   output*=rhs;
+  return output;
+}
+
+Polynomial& Polynomial::operator^=(const unsigned int& rhs)
+{
+  if (rhs == 0) 
+    {
+      Term unity;
+      fTerms.clear();
+      fTerms.push_back(unity);
+      return *this;
+    }
+
+  Polynomial recursivePolynomial = *this;
+  (*this)^=(rhs-1);
+  (*this)*=recursivePolynomial;
+  return *this;
+}
+
+const Polynomial Polynomial::operator^(const unsigned int& rhs) const
+{
+  Polynomial output = *this;
+  output^=rhs;
   return output;
 }
 
@@ -95,6 +119,21 @@ void Polynomial::simplify()
       it->simplifyCoefficients();
     }
 }
+
+void Polynomial::normalOrder()
+{
+  vector<Term> normalOrderedPolynomial;
+  for (vector<Term>::iterator it = fTerms.begin();
+       it != fTerms.end(); it++)
+    {
+      vector<Term> thisTermNormalOrdered = it->normalOrder();
+      normalOrderedPolynomial.insert(normalOrderedPolynomial.end(),
+				     thisTermNormalOrdered.begin(),
+				     thisTermNormalOrdered.end());
+    }
+  fTerms = normalOrderedPolynomial;
+}
+
 
 void Polynomial::print()
 {

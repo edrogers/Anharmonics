@@ -17,11 +17,14 @@ class Polynomial
   const Polynomial operator+(const Polynomial& rhs) const;
   Polynomial& operator*=(const Polynomial& rhs);
   const Polynomial operator*(const Polynomial& rhs) const;
+  Polynomial& operator^=(const unsigned int& rhs);
+  const Polynomial operator^(const unsigned int& rhs) const;
 
   std::vector<Term> getTerms() const { return fTerms; };
 
   void gatherTerms();
   void simplify();
+  void normalOrder();
   
   void print();
   void printTex();

@@ -21,10 +21,15 @@ Coefficient::Coefficient(string inputString)
       size_t firstAlphaLocation = inputString.find('a');
       if (firstAlphaLocation != string::npos)
 	{
-	  if (firstAlphaLocation != 0) {
-	    string factorString = inputString.substr(0,firstAlphaLocation-1);
-	    fNumericalFactor = atof(factorString.c_str());
-	  }
+	  if (firstAlphaLocation != 0) 
+	    {
+	      string factorString = inputString.substr(0,firstAlphaLocation-1);
+	      fNumericalFactor = atof(factorString.c_str());
+	    }
+	  else 
+	    {
+	      fNumericalFactor = 1.0;
+	    }
 	  string alphaString = inputString.substr(firstAlphaLocation);
 	  while (alphaString.length() > 0)
 	    {

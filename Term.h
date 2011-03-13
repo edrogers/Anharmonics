@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <fstream>
 #include <iostream>
 #include <algorithm>
 #include "Coefficient.h"
@@ -22,6 +23,7 @@ class Term
 
   Term& operator*=(const Term& rhs);
   const Term operator*(const Term& rhs) const;
+  const bool operator<(const Term& rhs) const;
 
   std::vector<char>         getOperators() const     { return fOperators; };
   std::vector<Coefficient>  getCoefficients() const  { return fCoefficients; };
@@ -36,8 +38,8 @@ class Term
 
   void simplifyCoefficients();
 
-  void print();
-  void printTex();
+  void print(std::ostream& outputStream = std::cout);
+  void printTex(std::ostream& outputStream = std::cout);
 };
 
 #endif

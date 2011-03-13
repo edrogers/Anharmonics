@@ -5,11 +5,15 @@ using namespace std;
 Polynomial::Polynomial(vector<Term> terms)
 {
   fTerms=terms;
+  fDoubleTerms.clear();
 }
 
 Polynomial& Polynomial::operator+=(const Polynomial& rhs)
 {
-  vector<Term> rhsTerms = rhs.getTerms();
+  ungroupDoubleTerms();
+  Polynomial rhsCopy = rhs;
+  rhsCopy.ungroupDoubleTerms();
+  vector<Term> rhsTerms = rhsCopy.getTerms();
   fTerms.insert(fTerms.end(),
 		rhsTerms.begin(),
 		rhsTerms.end());
@@ -25,7 +29,10 @@ const Polynomial Polynomial::operator+(const Polynomial& rhs) const
 
 Polynomial& Polynomial::operator-=(const Polynomial& rhs)
 {
-  vector<Term> rhsTerms = rhs.getTerms();
+  ungroupDoubleTerms();
+  Polynomial rhsCopy = rhs;
+  rhsCopy.ungroupDoubleTerms();
+  vector<Term> rhsTerms = rhsCopy.getTerms();
   Term negativeOne("(-1)");
   vector<Term> rhsTermsNegative;
   for (vector<Term>::iterator it = rhsTerms.begin();
@@ -48,18 +55,24 @@ const Polynomial Polynomial::operator-(const Polynomial& rhs) const
 
 Polynomial& Polynomial::operator*=(const Polynomial& rhs)
 {
+  ungroupDoubleTerms();
+  Polynomial rhsCopy = rhs;
+  rhsCopy.ungroupDoubleTerms();
   vector<Term> productTerms;
-  vector<Term> rhsTerms = rhs.getTerms();
+  vector<Term> rhsTerms = rhsCopy.getTerms();
   for (vector<Term>::iterator it1 = fTerms.begin();
        it1 != fTerms.end(); it1++) 
     {
       for (vector<Term>::iterator it2 = rhsTerms.begin();
 	   it2 != rhsTerms.end(); it2++) 
 	{
-	  Term lhs = *it1;
-	  Term rhs = *it2;
-	  Term product = lhs*rhs;
-	  productTerms.push_back(product);
+	  if (it1->getOrderInLambda()+it2->getOrderInLambda() <= 2)
+	    {
+	      Term lhs = *it1;
+	      Term rhs = *it2;
+	      Term product = lhs*rhs;
+	      productTerms.push_back(product);
+	    }
 	}
     }
   fTerms = productTerms;
@@ -102,6 +115,87 @@ const Polynomial Polynomial::commutedWith(const Polynomial& rhs) const
   return output;
 }
 
+void Polynomial::identifyDoubleTerms()
+{
+  for (vector<Term>::iterator itT0 = fTerms.begin();
+       itT0 < fTerms.end()-1; )
+    {
+      bool foundMatchForThisTerm = false;
+      for (vector<Term>::iterator itT1 = itT0+1;
+	   itT1 < fTerms.end(); )
+	{
+	  if (itT0->getOrderInLambda() == itT1->getOrderInLambda())
+
+	    {
+	      vector<char> t0Operators = itT0->getOperators();
+	      vector<char> t1Operators = itT1->getOperators();
+	      bool operatorMatch = false;
+	      int nBsT0 = 0;
+	      int nBsT1 = 0;
+	      if ((t0Operators.size() != t1Operators.size()) ||
+		  (t0Operators.size() == 0))
+		{
+		  itT1++;
+		  continue;
+		}
+	      else
+		{
+		  vector<char>::iterator          it = t0Operators.begin();
+		  vector<char>::reverse_iterator rit = t1Operators.rbegin();
+		  operatorMatch = true;
+		  while(it != t0Operators.end())
+		    {
+		      operatorMatch &= ((*it)!=(*rit));
+		      if ((*it)  == 'B') nBsT0++;
+		      if ((*rit) == 'B') nBsT1++;
+		      it++;
+		      rit++;
+		    }
+		}
+	      if (operatorMatch)
+		{
+		  foundMatchForThisTerm = true;
+		  if (nBsT0 > nBsT1) fDoubleTerms.push_back(DoubleTerm(*itT0,*itT1,true));
+		  else               fDoubleTerms.push_back(DoubleTerm(*itT1,*itT0,true));
+		  fTerms.erase(itT1);
+		  break;
+		}
+	      else
+		{
+		  itT1++;
+		  continue;
+		}
+	    }
+	  else
+	    {
+	      itT1++;
+	      continue;
+	    }
+	}
+      if (foundMatchForThisTerm) 
+	{
+	  fTerms.erase(itT0);
+	}
+      else
+	{
+	  itT0++;
+	}
+    }
+}
+
+void Polynomial::ungroupDoubleTerms()
+{
+  for (vector<DoubleTerm>::iterator it = fDoubleTerms.begin();
+       it != fDoubleTerms.end(); )
+    {
+      fTerms.push_back(it->getTerm(0));
+      Term negativeOne("(-1)");
+      if (it->getIsPlusTerm()) fTerms.push_back(it->getTerm(1));
+      else                     fTerms.push_back(negativeOne*(it->getTerm(1)));
+      fDoubleTerms.erase(it);
+    }
+}
+
 void Polynomial::gatherTerms()
 {
   vector<Term> gatheredTerms;
@@ -139,6 +233,15 @@ void Polynomial::gatherTerms()
   fTerms = gatheredTerms;
 }
 
+void Polynomial::groupTerms()
+{
+  ungroupDoubleTerms();
+  normalOrder();
+  simplify();
+  stable_sort(fTerms.begin(),fTerms.end());
+  identifyDoubleTerms();
+}
+
 void Polynomial::simplify()
 {
   gatherTerms();
@@ -172,29 +275,59 @@ void Polynomial::normalOrder()
   fTerms = normalOrderedPolynomial;
 }
 
-
-void Polynomial::print()
+void Polynomial::print(ostream& outputStream)
 {
+  for (vector<DoubleTerm>::iterator it = fDoubleTerms.begin();
+       it != fDoubleTerms.end(); it++) 
+    {
+      if (it != fDoubleTerms.begin())
+	{
+	  outputStream << " + ";
+	}
+      it->print(outputStream);
+    }
   for (vector<Term>::iterator it = fTerms.begin();
        it != fTerms.end(); it++)
     {
-      if (it != fTerms.begin())
+      if ((it != fTerms.begin()) || (fDoubleTerms.size() != 0))
 	{
-	  cout << " + ";
+	  outputStream << " + ";
 	}
-      it->print();
+      it->print(outputStream);
     }
 }
 
-void Polynomial::printTex()
+void Polynomial::printTex(ostream& outputStream, unsigned int termsAtATime, unsigned int termSetNum)
 {
+  unsigned int termsSoFar = 0;
+  for (vector<DoubleTerm>::iterator it = fDoubleTerms.begin();
+       it != fDoubleTerms.end(); it++) 
+    {
+      if ( (termsAtATime == 0) ||
+	   ((termsSoFar >= termSetNum*termsAtATime) &&
+	    (termsSoFar <  (termSetNum+1)*termsAtATime)) )
+	{
+	  if (it != fDoubleTerms.begin())
+	    {
+	      outputStream << " + ";
+	    }
+	  it->printTex(outputStream);
+	}
+      termsSoFar++;
+    }
   for (vector<Term>::iterator it = fTerms.begin();
        it != fTerms.end(); it++)
     {
-      if (it != fTerms.begin())
+      if ( (termsAtATime == 0) ||
+	   ((termsSoFar >= termSetNum*termsAtATime) &&
+	    (termsSoFar <  (termSetNum+1)*termsAtATime)) )
 	{
-	  cout << " + ";
+	  if ((it != fTerms.begin()) || (fDoubleTerms.size() != 0))
+	    {
+	      outputStream << " + ";
+	    }
+	  it->printTex(outputStream);
 	}
-      it->printTex();
+      termsSoFar++;
     }
 }

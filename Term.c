@@ -113,7 +113,7 @@ Term::Term(string inputString)
 	  else if ((inputString.length() > 0) &&
 		   (inputString.at(inputString.length()-1) == '*'))
 	    {
-	      inputString.replace(0,1,"");
+	      inputString.replace(inputString.length()-1,1,"");
 	    }
 	}
     }
@@ -166,10 +166,13 @@ Term::Term(string inputString)
       fOrderInLambda = 0;
     }
 
-  for (string::iterator it = inputString.begin();
-       it != inputString.end(); it++) 
+  if (inputString.length() > 0)
     {
-      fOperators.push_back(*it);
+      for (string::iterator it = inputString.begin();
+	   it != inputString.end(); it++) 
+	{
+	  fOperators.push_back(*it);
+	}
     }
 }
 
@@ -208,6 +211,24 @@ const Term Term::operator*(const Term& rhs) const
   Term outputTerm = *this;
   outputTerm*=rhs;
   return outputTerm;
+}
+
+const bool Term::operator<(const Term& rhs) const
+{
+  vector<char> rhsOperators = rhs.getOperators();
+  if (fOperators.size() > rhsOperators.size()) return true;
+  if (fOperators.size() < rhsOperators.size()) return false;
+  int numAsLhs = (int) count(fOperators.begin(),   fOperators.end(),   'A');
+  int numBsLhs = (int) count(fOperators.begin(),   fOperators.end(),   'B');
+  int diffLhs  = abs(numBsLhs-numAsLhs);
+  int numAsRhs = (int) count(rhsOperators.begin(), rhsOperators.end(), 'A');
+  int numBsRhs = (int) count(rhsOperators.begin(), rhsOperators.end(), 'B');
+  int diffRhs  = abs(numBsRhs-numAsRhs);
+
+  if (diffLhs > diffRhs) return true;
+  if (diffLhs < diffRhs) return false;
+
+  return (numBsLhs > numBsRhs);
 }
 
 void Term::setOperators(vector<char> operators)
@@ -340,7 +361,70 @@ void Term::simplifyCoefficients()
   fCoefficients = simplifiedCoefficients;
 }
 
-void Term::print()
+void Term::print(ostream& outputStream)
+{
+  if (fCoefficients.size() == 0)
+    {
+      return;
+    }
+  bool coefficientIsUnity = false;
+  int numberOfFactors = 0;
+  if ((fCoefficients.size() == 1) && 
+      (fCoefficients[0].isUnity()))
+    {
+      coefficientIsUnity = true;
+    }
+  else
+    {
+      numberOfFactors++;
+    }
+  if (fOrderInLambda != 0)    numberOfFactors++;
+  if (fOperators.size() != 0) numberOfFactors++;
+
+  if (numberOfFactors == 0) 
+    {
+      outputStream << "1";
+      return;
+    }
+
+  if (fOrderInLambda != 0)
+    {
+      outputStream << "lambda";
+      if (fOrderInLambda != 1)
+	{
+	  outputStream << "^" << fOrderInLambda;
+	}
+      if (numberOfFactors > 1) outputStream << "*";
+      numberOfFactors--;
+    }
+  if (!coefficientIsUnity)
+    {
+      outputStream << "(";
+      for (vector<Coefficient>::iterator it = fCoefficients.begin();
+	   it != fCoefficients.end(); it++)
+	{
+	  if ((it != fCoefficients.begin()) &&
+	      (it->getNumericalFactor() >= 0))
+	    {
+	      outputStream << "+";
+	    }
+	  it->print(outputStream);
+	}
+      outputStream << ")";
+      if (numberOfFactors > 1) outputStream << "*";
+      numberOfFactors--;
+    }
+  if (fOperators.size() != 0) 
+    {
+      for (vector<char>::iterator it = fOperators.begin();
+	   it != fOperators.end(); it++)
+	{
+	  outputStream << *it;
+	}
+    }
+}
+
+void Term::printTex(ostream& outputStream)
 {
   bool coefficientIsUnity = false;
   int numberOfFactors = 0;
@@ -358,48 +442,61 @@ void Term::print()
 
   if (numberOfFactors == 0) 
     {
-      cout << "1";
+      outputStream << "1";
       return;
     }
 
   if (fOrderInLambda != 0)
     {
-      cout << "lambda";
+      outputStream << "{\\lambda}";
       if (fOrderInLambda != 1)
 	{
-	  cout << "^" << fOrderInLambda;
+	  outputStream << "^" << fOrderInLambda;
 	}
-      if (numberOfFactors > 1) cout << "*";
+      if (numberOfFactors > 1) outputStream << "{\\cdot}";
       numberOfFactors--;
     }
   if (!coefficientIsUnity)
     {
-      cout << "(";
+      outputStream << "(";
       for (vector<Coefficient>::iterator it = fCoefficients.begin();
 	   it != fCoefficients.end(); it++)
 	{
 	  if ((it != fCoefficients.begin()) &&
 	      (it->getNumericalFactor() >= 0))
 	    {
-	      cout << "+";
+	      outputStream << "+";
 	    }
-	  it->print();
+	  it->printTex(outputStream);
 	}
-      cout << ")";
-      if (numberOfFactors > 1) cout << "*";
+      outputStream << ")";
+      if (numberOfFactors > 1) outputStream << "{\\cdot}";
       numberOfFactors--;
     }
   if (fOperators.size() != 0) 
     {
+      int consecutiveOperators = 1;
+      outputStream << fOperators[0];
       for (vector<char>::iterator it = fOperators.begin();
-	   it != fOperators.end(); it++)
+	   it != fOperators.end()-1; it++)
 	{
-	  cout << *it;
+	  if (*it == *(it+1))
+	    {
+	      consecutiveOperators++;
+	    } 
+	  else
+	    {
+	      if (consecutiveOperators != 1)
+		{
+		  outputStream << "^{" << consecutiveOperators << "}";
+		}
+	      outputStream << *(it+1);
+	      consecutiveOperators=1;
+	    }
+	}
+      if (consecutiveOperators != 1)
+	{
+	  outputStream << "^{" << consecutiveOperators << "}";
 	}
     }
-}
-
-void Term::printTex()
-{
-
 }

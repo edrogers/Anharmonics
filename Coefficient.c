@@ -111,28 +111,55 @@ void Coefficient::orderAlphas()
   sort(fAlphas.begin(), fAlphas.end());
 }
 
-void Coefficient::print()
+void Coefficient::print(ostream& outputStream)
 {
-  if (fNumericalFactor != 1.0)
+  outputStream << fNumericalFactor;
+  if (fAlphas.size() != 0)
     {
-      cout << fNumericalFactor;
-      if (fAlphas.size() != 0)
-	{
-	  cout << "*";
-	}
+      outputStream << "*";
     }
   for (vector<unsigned int>::iterator it = fAlphas.begin();
        it != fAlphas.end(); it++)
     {
       if (it != fAlphas.begin())
 	{
-	  cout << "*";
+	  outputStream << "*";
 	}
-      cout << "a_" << *it;
+      outputStream << "a_" << *it;
     }
 }
 
-void Coefficient::printTex()
+void Coefficient::printTex(ostream& outputStream)
 {
-
+  outputStream << fNumericalFactor;
+  if (fAlphas.size() != 0)
+    {
+      outputStream << "{\\cdot}";
+    }
+  if (fAlphas.size() != 0) 
+    {
+      int consecutiveAlphas = 1;
+      outputStream << "{\\beta}_{" << fAlphas[0] << "}";
+      for (vector<unsigned int>::iterator it = fAlphas.begin();
+	   it != fAlphas.end()-1; it++)
+	{
+	  if (*it == *(it+1))
+	    {
+	      consecutiveAlphas++;
+	    } 
+	  else
+	    {
+	      if (consecutiveAlphas != 1)
+		{
+		  outputStream << "^{" << consecutiveAlphas << "}";
+		}
+	      outputStream << "{\\cdot}" << "{\\beta}_{" << *(it+1) << "}";
+	      consecutiveAlphas=1;
+	    }
+	}
+      if (consecutiveAlphas != 1)
+	{
+	  outputStream << "^{" << consecutiveAlphas << "}";
+	}
+    }
 }

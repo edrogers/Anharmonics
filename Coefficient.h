@@ -2,6 +2,7 @@
 #define COEFFICIENT_H
 
 #include <vector>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -30,8 +31,8 @@ class Coefficient
 
   void orderAlphas();
 
-  void print();
-  void printTex();
+  void print(std::ostream& outputStream = std::cout);
+  void printTex(std::ostream& outputStream = std::cout);
 };
 
 #endif

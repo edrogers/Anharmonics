@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Coefficient::Coefficient(float numericalFactor,
+Coefficient::Coefficient(NumericalFraction numericalFactor,
 			 vector<unsigned int> alphas)
 {
   fNumericalFactor = numericalFactor;
@@ -14,7 +14,7 @@ Coefficient::Coefficient(string inputString)
   fAlphas.clear();
   if (inputString.length() == 0)
     {
-      fNumericalFactor = 1.0;
+      fNumericalFactor = NumericalFraction(1);
     }
   else 
     {
@@ -24,11 +24,11 @@ Coefficient::Coefficient(string inputString)
 	  if (firstAlphaLocation != 0) 
 	    {
 	      string factorString = inputString.substr(0,firstAlphaLocation-1);
-	      fNumericalFactor = atof(factorString.c_str());
+	      fNumericalFactor = NumericalFraction(factorString);
 	    }
 	  else 
 	    {
-	      fNumericalFactor = 1.0;
+	      fNumericalFactor = NumericalFraction(1);
 	    }
 	  string alphaString = inputString.substr(firstAlphaLocation);
 	  while (alphaString.length() > 0)
@@ -72,7 +72,7 @@ Coefficient::Coefficient(string inputString)
 	}
       else
 	{
-	  fNumericalFactor = atof(inputString.c_str());
+	  fNumericalFactor = NumericalFraction(inputString);
 	}
     }
 }
@@ -98,7 +98,7 @@ const Coefficient Coefficient::operator*(const Coefficient& rhs) const
 
 bool Coefficient::isUnity() const
 {
-  if ((fNumericalFactor == 1.0) &&
+  if ((fNumericalFactor.getNumerator() == fNumericalFactor.getDenominator()) &&
       (fAlphas.size() == 0))
     {
       return true;
@@ -113,7 +113,7 @@ void Coefficient::orderAlphas()
 
 void Coefficient::print(ostream& outputStream)
 {
-  outputStream << fNumericalFactor;
+  fNumericalFactor.print(outputStream);
   if (fAlphas.size() != 0)
     {
       outputStream << "*";
@@ -131,7 +131,7 @@ void Coefficient::print(ostream& outputStream)
 
 void Coefficient::printTex(ostream& outputStream)
 {
-  outputStream << fNumericalFactor;
+  fNumericalFactor.printTex(outputStream);
   if (fAlphas.size() != 0)
     {
       outputStream << "{\\cdot}";
@@ -139,7 +139,7 @@ void Coefficient::printTex(ostream& outputStream)
   if (fAlphas.size() != 0) 
     {
       int consecutiveAlphas = 1;
-      outputStream << "{\\beta}_{" << fAlphas[0] << "}";
+      outputStream << "{\\alpha}_{" << fAlphas[0] << "}";
       for (vector<unsigned int>::iterator it = fAlphas.begin();
 	   it != fAlphas.end()-1; it++)
 	{
@@ -153,7 +153,7 @@ void Coefficient::printTex(ostream& outputStream)
 		{
 		  outputStream << "^{" << consecutiveAlphas << "}";
 		}
-	      outputStream << "{\\cdot}" << "{\\beta}_{" << *(it+1) << "}";
+	      outputStream << "{\\cdot}" << "{\\alpha}_{" << *(it+1) << "}";
 	      consecutiveAlphas=1;
 	    }
 	}

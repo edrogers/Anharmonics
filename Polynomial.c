@@ -66,7 +66,7 @@ Polynomial& Polynomial::operator*=(const Polynomial& rhs)
       for (vector<Term>::iterator it2 = rhsTerms.begin();
 	   it2 != rhsTerms.end(); it2++) 
 	{
-	  if (it1->getOrderInLambda()+it2->getOrderInLambda() <= 2)
+	  if (it1->getOrderInLambda()+it2->getOrderInLambda() <= 3)
 	    {
 	      Term lhs = *it1;
 	      Term rhs = *it2;

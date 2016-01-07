@@ -139,7 +139,7 @@ void Coefficient::printTex(ostream& outputStream)
   if (fAlphas.size() != 0) 
     {
       int consecutiveAlphas = 1;
-      outputStream << "{\\beta}_{" << fAlphas[0] << "}";
+      outputStream << "{\\alpha}_{" << fAlphas[0] << "}";
       for (vector<unsigned int>::iterator it = fAlphas.begin();
 	   it != fAlphas.end()-1; it++)
 	{
@@ -153,7 +153,7 @@ void Coefficient::printTex(ostream& outputStream)
 		{
 		  outputStream << "^{" << consecutiveAlphas << "}";
 		}
-	      outputStream << "{\\cdot}" << "{\\beta}_{" << *(it+1) << "}";
+	      outputStream << "{\\cdot}" << "{\\alpha}_{" << *(it+1) << "}";
 	      consecutiveAlphas=1;
 	    }
 	}

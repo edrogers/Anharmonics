@@ -31,7 +31,7 @@ int main()
   /**********************/
 
   vector<Term> xTerms;
-  xTerms.push_back(Term("lambda*(-1*a_17)*ABA"));
+  xTerms.push_back(Term("lambda*(-4*a_17)*ABA"));
   xTerms.push_back(Term("lambda*(-12*a_14*a_123)*BBABA"));
   Polynomial x(xTerms);
 
@@ -71,52 +71,11 @@ int main()
   /* Page 2 starts here */
   /**********************/
 
-  vector<Term> x2Terms;
-  x2Terms.push_back(Term("lambda*(-1*a_17)*ABA"));
-  x2Terms.push_back(Term("lambda*(-12*a_14*a_123)*BBABA"));
-  Polynomial x2(x2Terms);
-
-  texFile << "\\begin{table}[!hp]"                                                << endl;
-  texFile << "\\begin{center}"                                                    << endl;
-  texFile << "\\begin{tabular}{rcl}"                                              << endl;
-
-  linesPrinted = 0;
-  
-  x2.groupTerms();
-  termsToPrint = x2.getTerms().size()+x2.getDoubleTerms().size();
-  totalLinesToPrint = termsToPrint/termsAtATime;
-  if (termsToPrint%termsAtATime != 0) totalLinesToPrint++;
-
-  while (linesPrinted < totalLinesToPrint)
-    {
-      if (linesPrinted==0) 
-	texFile << "$X$ & = & $";
-      else
-	texFile << " & & $";
-      x2.printTex(texFile,termsAtATime,linesPrinted++);
-      texFile << "$";
-      texFile << " \\\\" << endl;
-    }
-
-  texFile << "\\end{tabular}"                                              << endl;
-  texFile << "\\end{center}"                                               << endl;
-  texFile << "\\end{table}"                                                << endl << endl;
-
-  /********************/
-  /* Page 2 ends here */
-  /********************/
-
-  texFile << "\\newpage" << endl << endl;
-
-  /**********************/
-  /* Page 3 starts here */
-  /**********************/
-
   vector<Term> yTerms;
   yTerms.push_back(Term("lambda*(a_20)*BB"));
   yTerms.push_back(Term("lambda*(-1*a_20)*AA"));
-  yTerms.push_back(Term("lambda*(a_30)*BBBA"));
-  yTerms.push_back(Term("lambda*(-1*a_30)*BAAA"));
+  yTerms.push_back(Term("lambda*(a_31)*BBBA"));
+  yTerms.push_back(Term("lambda*(-1*a_31)*BAAA"));
   yTerms.push_back(Term("lambda*(a_40)*BBBB"));
   yTerms.push_back(Term("lambda*(a_40)*AAAA"));
   yTerms.push_back(Term("lambda^2*(a_10020)*BB"));
@@ -157,20 +116,11 @@ int main()
   texFile << "\\end{center}"                                               << endl;
   texFile << "\\end{table}"                                                << endl << endl;
 
-  /********************/
-  /* Page 3 ends here */
-  /********************/
 
-  texFile << "\\newpage" << endl << endl;
 
-  /**********************/
-  /* Page 4 starts here */
-  /**********************/
-
-  vector<Term> zTerms;
-  zTerms.push_back(Term("lambda*(-1*a_17)*ABA"));
-  zTerms.push_back(Term("lambda*(-12*a_14*a_123)*BBABA"));
-  Polynomial z(zTerms);
+  vector<Term> h0Terms;
+  h0Terms.push_back(Term("BA"));
+  Polynomial h0(h0Terms);
 
   texFile << "\\begin{table}[!hp]"                                                << endl;
   texFile << "\\begin{center}"                                                    << endl;
@@ -178,18 +128,18 @@ int main()
 
   linesPrinted = 0;
   
-  /* z.groupTerms(); */
-  termsToPrint = z.getTerms().size()+z.getDoubleTerms().size();
+  h0.groupTerms();
+  termsToPrint = h0.getTerms().size()+h0.getDoubleTerms().size();
   totalLinesToPrint = termsToPrint/termsAtATime;
   if (termsToPrint%termsAtATime != 0) totalLinesToPrint++;
 
   while (linesPrinted < totalLinesToPrint)
     {
       if (linesPrinted==0) 
-	texFile << "$Z$ & = & $";
+	texFile << "$H_{0}$ & = & $";
       else
 	texFile << " & & $";
-      z.printTex(texFile,termsAtATime,linesPrinted++);
+      h0.printTex(texFile,termsAtATime,linesPrinted++);
       texFile << "$";
       texFile << " \\\\" << endl;
     }
@@ -198,40 +148,28 @@ int main()
   texFile << "\\end{center}"                                               << endl;
   texFile << "\\end{table}"                                                << endl << endl;
 
-  /********************/
-  /* Page 3 ends here */
-  /********************/
 
-  texFile << "\\newpage" << endl << endl;
 
-  /**********************/
-  /* Page 5 starts here */
-  /**********************/
 
-  vector<Term> h0Terms;
-  h0Terms.push_back(Term("BA"));
-  Polynomial h0(h0Terms);
-
-  Polynomial CommutatorResult = h0.commutedWith(x);
+  Polynomial CommutatorResult = y.commutedWith(h0);
 
   texFile << "\\begin{table}[!hp]"                                                << endl;
   texFile << "\\begin{center}"                                                    << endl;
   texFile << "\\begin{tabular}{rcl}"                                              << endl;
 
-  termsAtATime = 1;
   linesPrinted = 0;
   
   CommutatorResult.groupTerms();
-  texFile << "$[-X,H_{0}]$ & = & $";
-  CommutatorResult.printTex(texFile,termsAtATime,linesPrinted++);
-  texFile << "$ \\\\" << endl;
-  
   termsToPrint = CommutatorResult.getTerms().size()+CommutatorResult.getDoubleTerms().size();
   totalLinesToPrint = termsToPrint/termsAtATime;
   if (termsToPrint%termsAtATime != 0) totalLinesToPrint++;
   while (linesPrinted < totalLinesToPrint)
     {
-      texFile << " & & $";
+      if (linesPrinted == 0) {
+	texFile << "$[Y,H_{0}]$ & = & $";
+      } else {
+	texFile << " & & $";
+      }
       CommutatorResult.printTex(texFile,termsAtATime,linesPrinted++);
       texFile << "$";
       texFile << " \\\\" << endl;
@@ -242,7 +180,7 @@ int main()
   texFile << "\\end{table}"                                                << endl << endl;
 
   /********************/
-  /* Page 5 ends here */
+  /* Page 2 ends here */
   /********************/
 
   texFile << "\\end{document}" << endl;

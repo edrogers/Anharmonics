@@ -16,34 +16,71 @@ Yada
 Yada
 
 \section{Explanation of what's in \texttt{Anharmonic.pdf}}
-Yada
 
-If we enter $X$, and ask it to print without grouping terms (see line commented out at Line 44), we just get what we put in, with some \LaTeX\ formatting (as seen on Page 1 of the output): 
+\subsection{Entering a random polynomial into \texttt{main.c}}
+
+To start with, we enter a random polynomial of operators into our code, just to show the syntax of input. We start with $X$, such that:
+
 \begin{table}[!hp]
 \begin{center}
 \begin{tabular}{rcl}
-$X$ & = & ${\lambda}{\cdot}(-1{\cdot}{\alpha}_{17}){\cdot}ABA$ \\
+$X$ & = & ${\lambda}{\cdot}(-4{\cdot}{\alpha}_{17}){\cdot}ABA$ \\
  & & $ + {\lambda}{\cdot}(-12{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{2}ABA$ \\
 \end{tabular}
 \end{center}
 \end{table}
 
-If, however, we ask it to group terms, (see Line 85), terms are
+In \texttt{main.c}, this $X$ is entered using lines 33-36. Lines 38-62 then print $X$ as a \LaTeX\ table to the file \texttt{Anharmonic.tex}. As you can see looking at \texttt{Anharmonic.pdf}, this $X$ appears on the first page.
 
-\newpage
+\subsection{Using \texttt{main.c} to rearrange terms in a polynomial to form elements of $L^n_m$}
+
+Obviously, the above $X$ is quite artificial, but as a demonstration of the use of \texttt{main.c}, let's un-comment Line 44, and re-run the code. Remember, the re-run procedure is:
+\begin{itemize}
+\item \texttt{make}
+\item \texttt{./main}
+\item \texttt{make tex}
+\end{itemize}
+
+The result in \texttt{Anharmonic.tex} (and \texttt{Anharmonic.pdf}) will be:
 
 \begin{table}[!hp]
 \begin{center}
 \begin{tabular}{rcl}
-$X$ & = & ${\lambda}{\cdot}(5{\cdot}{\alpha}_{1}){\cdot}(B^{4}+A^{4}) + {\lambda}{\cdot}(12{\cdot}{\alpha}_{1}){\cdot}(B^{4}-A^{4})$ \\
- & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{2}){\cdot}(B^{3}A-BA^{3})$ \\
- & & $ + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}-0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A+BA^{2}) + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}+0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A-BA^{2})$ \\
- & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{3}){\cdot}(B^{2}-A^{2})$ \\
- & & $ + {\lambda}{\cdot}(-7{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{3}A^{2}$ \\
- & & $ + {\lambda}{\cdot}(-1{\cdot}{\alpha}_{17}){\cdot}A$ \\
+$X$ & = & ${\lambda}{\cdot}(-6{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}-2{\cdot}{\alpha}_{17}){\cdot}(B^{2}A+BA^{2}) + {\lambda}{\cdot}(-6{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}+2{\cdot}{\alpha}_{17}){\cdot}(B^{2}A-BA^{2})$ \\
+ & & $ + {\lambda}{\cdot}(-12{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{3}A^{2}$ \\
+ & & $ + {\lambda}{\cdot}(-4{\cdot}{\alpha}_{17}){\cdot}A$ \\
 \end{tabular}
 \end{center}
 \end{table}
+
+So, calling \texttt{x.groupTerms();} has done a lot of the grunt-work of performing commutators and creating group elements from our original $X$.
+
+\subsection{Performing a commutator}
+
+Let's look at the \texttt{Anharmonic Notes (1).pdf} that you sent me, dated February 24, 2016, via email on Feb 25th. On Page 10, about halfway down, you show an operator $X$, (which I'll call $Y$), given by, for clarity here:
+\newline
+\newline
+$Y$ = $\lambda(\alpha_{20}L_0^2 + \alpha_{31}L_1^3 + \alpha_{40}L_0^4) + \lambda^2(\beta_{20}L_0^2 + \beta_{31}L_1^3 + \beta_{40}L_0^4 +\beta_{42}L_2^4 + \beta_{60}L_0^6)$
+\newline
+\newline
+This is entered into \texttt{main.c} on lines 74-91. The result is printed into \LaTeX\ format in lines 93-117, and appears as follows: 
+
+\begin{table}[!hp]
+\begin{center}
+\begin{tabular}{rcl}
+$Y$ & = & ${\lambda}^2{\cdot}(1{\cdot}{\alpha}_{10060}){\cdot}(B^{6}-A^{6})$ \\
+ & & $ + {\lambda}^2{\cdot}(1{\cdot}{\alpha}_{10042}){\cdot}(B^{4}A^{2}-B^{2}A^{4})$ \\
+ & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{40}){\cdot}(B^{4}+A^{4})$ \\
+ & & $ + {\lambda}^2{\cdot}(1{\cdot}{\alpha}_{10040}){\cdot}(B^{4}-A^{4})$ \\
+ & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{31}){\cdot}(B^{3}A-BA^{3})$ \\
+ & & $ + {\lambda}^2{\cdot}(1{\cdot}{\alpha}_{10031}){\cdot}(B^{3}A-BA^{3})$ \\
+ & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{20}){\cdot}(B^{2}-A^{2})$ \\
+ & & $ + {\lambda}^2{\cdot}(1{\cdot}{\alpha}_{10020}){\cdot}(B^{2}-A^{2})$ \\
+\end{tabular}
+\end{center}
+\end{table}
+
+(Note: Where your document has used $\beta_{40}$, I have substituted $\alpha_{10040}$. i.e., $\beta_{x} \rightarrow \alpha_{10000+x}$.)
 
 \newpage
 

@@ -86,43 +86,26 @@ Lines 121-149 define and print $H_{0}$. Then Line 154 performs the commutator, $
 
 \newpage
 
+\subsection{Performing multiple commutators}
+
+Looking at the \texttt{Anharmonic Notes (1).pdf}, on page 16, it looks like you have a lot of double commutators to perform. Let's have \texttt{main.c} do one. ``Commutator 2.3.3'' is $[L^2_0,[L^3_1,\bar{L}^3_1]]$. These three elements are defined across Lines 192-285. Then they are commuted pretty quickly using the line:
+\newline
+\newline
+\texttt{Polynomial Commutator\_2\_3\_3 = L20.commutedWith(L31.commutedWith(L31Bar));}
+\newline
+\newline
+The result is printed in the same way as usual:
 \begin{table}[!hp]
 \begin{center}
 \begin{tabular}{rcl}
-$Y$ & = & ${\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}-0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A+BA^{2}) + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}+0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A-BA^{2})$ \\
- & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{3}){\cdot}(B^{2}-A^{2})$ \\
- & & $ + {\lambda}{\cdot}(-7{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{3}A^{2}$ \\
- & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{1}){\cdot}B^{4}$ \\
- & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{2}){\cdot}B^{3}A$ \\
- & & $ + {\lambda}{\cdot}(-1{\cdot}{\alpha}_{17}){\cdot}A$ \\
+$[L^{2}_{0},[L^{3}_{1},\bar{L}^{3}_{1}]]$ & = & $(96){\cdot}(B^{4}A^{2}+B^{2}A^{4})$ \\
+ & & $ + (240){\cdot}(B^{3}A+BA^{3})$ \\
+ & & $ + (96){\cdot}(B^{2}+A^{2})$ \\
 \end{tabular}
 \end{center}
 \end{table}
 
-\newpage
-
-\begin{table}[!hp]
-\begin{center}
-\begin{tabular}{rcl}
-$Z$ & = & ${\lambda}{\cdot}(-1{\cdot}{\alpha}_{17}){\cdot}ABA$ \\
- & & $ + {\lambda}{\cdot}(-12{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{2}ABA$ \\
-\end{tabular}
-\end{center}
-\end{table}
-
-\newpage
-
-\begin{table}[!hp]
-\begin{center}
-\begin{tabular}{rcl}
-$[-X,H_{0}]$ & = & ${\lambda}{\cdot}(48{\cdot}{\alpha}_{1}){\cdot}(B^{4}+A^{4}) + {\lambda}{\cdot}(20{\cdot}{\alpha}_{1}){\cdot}(B^{4}-A^{4})$ \\
- & & $ + {\lambda}{\cdot}(2{\cdot}{\alpha}_{2}){\cdot}(B^{3}A+BA^{3})$ \\
- & & $ + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}+0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A+BA^{2}) + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}-0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A-BA^{2})$ \\
- & & $ + {\lambda}{\cdot}(2{\cdot}{\alpha}_{3}){\cdot}(B^{2}+A^{2})$ \\
- & & $ + {\lambda}{\cdot}(-7{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{3}A^{2}$ \\
- & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{17}){\cdot}A$ \\
-\end{tabular}
-\end{center}
-\end{table}
+Okay, that should get you started!
+ 
 
 \end{document}

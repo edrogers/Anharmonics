@@ -221,10 +221,10 @@ int main()
   texFile << "\\end{table}"                                                << endl << endl;
 
 
-  vector<Term> L20BarTerms;
-  L20BarTerms.push_back(Term("BB"));
-  L20BarTerms.push_back(Term("AA"));
-  Polynomial L20Bar(L20BarTerms);
+  vector<Term> L31Terms;
+  L31Terms.push_back(Term("BBBA"));
+  L31Terms.push_back(Term("(-1)*BAAA"));
+  Polynomial L31(L31Terms);
 
   texFile << "\\begin{table}[!hp]"                                                << endl;
   texFile << "\\begin{center}"                                                    << endl;
@@ -232,18 +232,18 @@ int main()
 
   linesPrinted = 0;
   
-  L20Bar.groupTerms();
-  termsToPrint = L20Bar.getTerms().size()+L20Bar.getDoubleTerms().size();
+  L31.groupTerms();
+  termsToPrint = L31.getTerms().size()+L31.getDoubleTerms().size();
   totalLinesToPrint = termsToPrint/termsAtATime;
   if (termsToPrint%termsAtATime != 0) totalLinesToPrint++;
 
   while (linesPrinted < totalLinesToPrint)
     {
       if (linesPrinted==0) 
-	texFile << "$\\bar{L}^{2}_{0}$ & = & $";
+	texFile << "$L^{3}_{1}$ & = & $";
       else
 	texFile << " & & $";
-      L20Bar.printTex(texFile,termsAtATime,linesPrinted++);
+      L31.printTex(texFile,termsAtATime,linesPrinted++);
       texFile << "$";
       texFile << " \\\\" << endl;
     }
@@ -252,7 +252,11 @@ int main()
   texFile << "\\end{center}"                                               << endl;
   texFile << "\\end{table}"                                                << endl << endl;
 
-  Polynomial L20CommutedWithL20BarTwice = L20.commutedWith(L20.commutedWith(L20Bar));
+
+  vector<Term> L31BarTerms;
+  L31BarTerms.push_back(Term("BBBA"));
+  L31BarTerms.push_back(Term("BAAA"));
+  Polynomial L31Bar(L31BarTerms);
 
   texFile << "\\begin{table}[!hp]"                                                << endl;
   texFile << "\\begin{center}"                                                    << endl;
@@ -260,18 +264,46 @@ int main()
 
   linesPrinted = 0;
   
-  L20CommutedWithL20BarTwice.groupTerms();
-  termsToPrint = L20CommutedWithL20BarTwice.getTerms().size()+L20CommutedWithL20BarTwice.getDoubleTerms().size();
+  L31Bar.groupTerms();
+  termsToPrint = L31Bar.getTerms().size()+L31Bar.getDoubleTerms().size();
+  totalLinesToPrint = termsToPrint/termsAtATime;
+  if (termsToPrint%termsAtATime != 0) totalLinesToPrint++;
+
+  while (linesPrinted < totalLinesToPrint)
+    {
+      if (linesPrinted==0) 
+	texFile << "$\\bar{L}^{3}_{1}$ & = & $";
+      else
+	texFile << " & & $";
+      L31Bar.printTex(texFile,termsAtATime,linesPrinted++);
+      texFile << "$";
+      texFile << " \\\\" << endl;
+    }
+
+  texFile << "\\end{tabular}"                                              << endl;
+  texFile << "\\end{center}"                                               << endl;
+  texFile << "\\end{table}"                                                << endl << endl;
+
+  Polynomial Commutator_2_3_3 = L20.commutedWith(L31.commutedWith(L31Bar));
+
+  texFile << "\\begin{table}[!hp]"                                                << endl;
+  texFile << "\\begin{center}"                                                    << endl;
+  texFile << "\\begin{tabular}{rcl}"                                              << endl;
+
+  linesPrinted = 0;
+  
+  Commutator_2_3_3.groupTerms();
+  termsToPrint = Commutator_2_3_3.getTerms().size()+Commutator_2_3_3.getDoubleTerms().size();
   totalLinesToPrint = termsToPrint/termsAtATime;
   if (termsToPrint%termsAtATime != 0) totalLinesToPrint++;
   while (linesPrinted < totalLinesToPrint)
     {
       if (linesPrinted == 0) {
-  	texFile << "$[L^{2}_{0},[L^{2}_{0},\\bar{L}^{2}_{0}]]$ & = & $";
+  	texFile << "$[L^{2}_{0},[L^{3}_{1},\\bar{L}^{3}_{1}]]$ & = & $";
       } else {
   	texFile << " & & $";
       }
-      L20CommutedWithL20BarTwice.printTex(texFile,termsAtATime,linesPrinted++);
+      Commutator_2_3_3.printTex(texFile,termsAtATime,linesPrinted++);
       texFile << "$";
       texFile << " \\\\" << endl;
     }

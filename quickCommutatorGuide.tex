@@ -1,0 +1,89 @@
+\documentclass{article}
+\title{Quick and Dirty Guide to Using this Code}
+\author{Ed Rogers}
+\date{March 2016}
+\begin{document}
+   \maketitle
+
+\begin{abstract}
+This article is meant to give a brief explanation of how to type terms of a commutator into \texttt{main.c} and end up with a PDF \& \LaTeX\ formatted output of the resulting arithmetic.
+\end{abstract}
+
+\section{Getting the most recent version of the code}
+Yada
+
+\section{Test run as is}
+Yada
+
+\section{Explanation of what's in \texttt{Anharmonic.pdf}}
+Yada
+
+If we enter $X$, and ask it to print without grouping terms (see line commented out at Line 44), we just get what we put in, with some \LaTeX\ formatting (as seen on Page 1 of the output): 
+\begin{table}[!hp]
+\begin{center}
+\begin{tabular}{rcl}
+$X$ & = & ${\lambda}{\cdot}(-1{\cdot}{\alpha}_{17}){\cdot}ABA$ \\
+ & & $ + {\lambda}{\cdot}(-12{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{2}ABA$ \\
+\end{tabular}
+\end{center}
+\end{table}
+
+If, however, we ask it to group terms, (see Line 85), terms are
+
+\newpage
+
+\begin{table}[!hp]
+\begin{center}
+\begin{tabular}{rcl}
+$X$ & = & ${\lambda}{\cdot}(5{\cdot}{\alpha}_{1}){\cdot}(B^{4}+A^{4}) + {\lambda}{\cdot}(12{\cdot}{\alpha}_{1}){\cdot}(B^{4}-A^{4})$ \\
+ & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{2}){\cdot}(B^{3}A-BA^{3})$ \\
+ & & $ + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}-0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A+BA^{2}) + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}+0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A-BA^{2})$ \\
+ & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{3}){\cdot}(B^{2}-A^{2})$ \\
+ & & $ + {\lambda}{\cdot}(-7{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{3}A^{2}$ \\
+ & & $ + {\lambda}{\cdot}(-1{\cdot}{\alpha}_{17}){\cdot}A$ \\
+\end{tabular}
+\end{center}
+\end{table}
+
+\newpage
+
+\begin{table}[!hp]
+\begin{center}
+\begin{tabular}{rcl}
+$Y$ & = & ${\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}-0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A+BA^{2}) + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}+0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A-BA^{2})$ \\
+ & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{3}){\cdot}(B^{2}-A^{2})$ \\
+ & & $ + {\lambda}{\cdot}(-7{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{3}A^{2}$ \\
+ & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{1}){\cdot}B^{4}$ \\
+ & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{2}){\cdot}B^{3}A$ \\
+ & & $ + {\lambda}{\cdot}(-1{\cdot}{\alpha}_{17}){\cdot}A$ \\
+\end{tabular}
+\end{center}
+\end{table}
+
+\newpage
+
+\begin{table}[!hp]
+\begin{center}
+\begin{tabular}{rcl}
+$Z$ & = & ${\lambda}{\cdot}(-1{\cdot}{\alpha}_{17}){\cdot}ABA$ \\
+ & & $ + {\lambda}{\cdot}(-12{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{2}ABA$ \\
+\end{tabular}
+\end{center}
+\end{table}
+
+\newpage
+
+\begin{table}[!hp]
+\begin{center}
+\begin{tabular}{rcl}
+$[-X,H_{0}]$ & = & ${\lambda}{\cdot}(48{\cdot}{\alpha}_{1}){\cdot}(B^{4}+A^{4}) + {\lambda}{\cdot}(20{\cdot}{\alpha}_{1}){\cdot}(B^{4}-A^{4})$ \\
+ & & $ + {\lambda}{\cdot}(2{\cdot}{\alpha}_{2}){\cdot}(B^{3}A+BA^{3})$ \\
+ & & $ + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}+0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A+BA^{2}) + {\lambda}{\cdot}(-3.5{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}-0.5{\cdot}{\alpha}_{17}){\cdot}(B^{2}A-BA^{2})$ \\
+ & & $ + {\lambda}{\cdot}(2{\cdot}{\alpha}_{3}){\cdot}(B^{2}+A^{2})$ \\
+ & & $ + {\lambda}{\cdot}(-7{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}){\cdot}B^{3}A^{2}$ \\
+ & & $ + {\lambda}{\cdot}(1{\cdot}{\alpha}_{17}){\cdot}A$ \\
+\end{tabular}
+\end{center}
+\end{table}
+
+\end{document}

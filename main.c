@@ -183,6 +183,107 @@ int main()
   /* Page 2 ends here */
   /********************/
 
+  texFile << "\\newpage" << endl << endl;
+
+  /**********************/
+  /* Page 3 starts here */
+  /**********************/
+
+  vector<Term> L20Terms;
+  L20Terms.push_back(Term("BB"));
+  L20Terms.push_back(Term("(-1)*AA"));
+  Polynomial L20(L20Terms);
+
+  texFile << "\\begin{table}[!hp]"                                                << endl;
+  texFile << "\\begin{center}"                                                    << endl;
+  texFile << "\\begin{tabular}{rcl}"                                              << endl;
+
+  linesPrinted = 0;
+  
+  L20.groupTerms();
+  termsToPrint = L20.getTerms().size()+L20.getDoubleTerms().size();
+  totalLinesToPrint = termsToPrint/termsAtATime;
+  if (termsToPrint%termsAtATime != 0) totalLinesToPrint++;
+
+  while (linesPrinted < totalLinesToPrint)
+    {
+      if (linesPrinted==0) 
+	texFile << "$L^{2}_{0}$ & = & $";
+      else
+	texFile << " & & $";
+      L20.printTex(texFile,termsAtATime,linesPrinted++);
+      texFile << "$";
+      texFile << " \\\\" << endl;
+    }
+
+  texFile << "\\end{tabular}"                                              << endl;
+  texFile << "\\end{center}"                                               << endl;
+  texFile << "\\end{table}"                                                << endl << endl;
+
+
+  vector<Term> L20BarTerms;
+  L20BarTerms.push_back(Term("BB"));
+  L20BarTerms.push_back(Term("AA"));
+  Polynomial L20Bar(L20BarTerms);
+
+  texFile << "\\begin{table}[!hp]"                                                << endl;
+  texFile << "\\begin{center}"                                                    << endl;
+  texFile << "\\begin{tabular}{rcl}"                                              << endl;
+
+  linesPrinted = 0;
+  
+  L20Bar.groupTerms();
+  termsToPrint = L20Bar.getTerms().size()+L20Bar.getDoubleTerms().size();
+  totalLinesToPrint = termsToPrint/termsAtATime;
+  if (termsToPrint%termsAtATime != 0) totalLinesToPrint++;
+
+  while (linesPrinted < totalLinesToPrint)
+    {
+      if (linesPrinted==0) 
+	texFile << "$\\bar{L}^{2}_{0}$ & = & $";
+      else
+	texFile << " & & $";
+      L20Bar.printTex(texFile,termsAtATime,linesPrinted++);
+      texFile << "$";
+      texFile << " \\\\" << endl;
+    }
+
+  texFile << "\\end{tabular}"                                              << endl;
+  texFile << "\\end{center}"                                               << endl;
+  texFile << "\\end{table}"                                                << endl << endl;
+
+  Polynomial L20CommutedWithL20BarTwice = L20.commutedWith(L20.commutedWith(L20Bar));
+
+  texFile << "\\begin{table}[!hp]"                                                << endl;
+  texFile << "\\begin{center}"                                                    << endl;
+  texFile << "\\begin{tabular}{rcl}"                                              << endl;
+
+  linesPrinted = 0;
+  
+  L20CommutedWithL20BarTwice.groupTerms();
+  termsToPrint = L20CommutedWithL20BarTwice.getTerms().size()+L20CommutedWithL20BarTwice.getDoubleTerms().size();
+  totalLinesToPrint = termsToPrint/termsAtATime;
+  if (termsToPrint%termsAtATime != 0) totalLinesToPrint++;
+  while (linesPrinted < totalLinesToPrint)
+    {
+      if (linesPrinted == 0) {
+  	texFile << "$[L^{2}_{0},[L^{2}_{0},\\bar{L}^{2}_{0}]]$ & = & $";
+      } else {
+  	texFile << " & & $";
+      }
+      L20CommutedWithL20BarTwice.printTex(texFile,termsAtATime,linesPrinted++);
+      texFile << "$";
+      texFile << " \\\\" << endl;
+    }
+
+  texFile << "\\end{tabular}"                                              << endl;
+  texFile << "\\end{center}"                                               << endl;
+  texFile << "\\end{table}"                                                << endl << endl;
+
+  /********************/
+  /* Page 3 ends here */
+  /********************/
+
   texFile << "\\end{document}" << endl;
 
   return 0;

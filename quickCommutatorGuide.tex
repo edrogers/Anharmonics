@@ -10,12 +10,51 @@ This article is meant to give a brief explanation of how to type terms of a comm
 \end{abstract}
 
 \section{Getting the most recent version of the code}
-Yada
+
+First, set up a new directory, and download the latest copy of the code into it. You can visit:
+\newline
+\newline
+\texttt{https://github.com/edrogers/Anharmonics}
+\newline
+\newline
+The simplest way is to hit ``Download ZIP'' in the upper right, and just unzip the downloaded folder to your new directory. Use the Unix \texttt{unzip} command, and you should be ready to go.
 
 \section{Test run as is}
-Yada
+
+Now, to get started, try compiling the code, running it, running the scripts that convert from \LaTeX\ to PDF, and checking the PDF output.
+
+\subsection{Compile the code}
+
+Type the following: 
+\newline
+\newline
+\texttt{make}
+\newline
+\newline
+
+\subsection{Run the code (producing a .tex file -- \texttt{Anharmonic.tex})}
+
+Type the following: 
+\newline
+\newline
+\texttt{./main}
+\newline
+\newline
+
+\subsection{Convert \texttt{Anharmonic.tex} to \texttt{Anharmonic.pdf}}
+
+Type the following: 
+\newline
+\newline
+\texttt{make tex}
+\newline
+\newline
+
+Now you should be ready to inspect the code output at \texttt{Anharmonic.tex} \& \texttt{Anharmonic.pdf}
 
 \section{Explanation of what's in \texttt{Anharmonic.pdf}}
+
+This section is where we roll up our sleeves and start looking at how \texttt{main.c} ends up producing \texttt{Anharmonic.tex}.
 
 \subsection{Entering a random polynomial into \texttt{main.c}}
 
@@ -43,7 +82,7 @@ Obviously, the above $X$ is quite artificial, but as a demonstration of the use 
 
 The result in \texttt{Anharmonic.tex} (and \texttt{Anharmonic.pdf}) will be:
 
-\begin{table}[!hp]
+\begin{table}[h!]
 \begin{center}
 \begin{tabular}{rcl}
 $X$ & = & ${\lambda}{\cdot}(-6{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}-2{\cdot}{\alpha}_{17}){\cdot}(B^{2}A+BA^{2}) + {\lambda}{\cdot}(-6{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}+2{\cdot}{\alpha}_{17}){\cdot}(B^{2}A-BA^{2})$ \\
@@ -52,12 +91,12 @@ $X$ & = & ${\lambda}{\cdot}(-6{\cdot}{\alpha}_{14}{\cdot}{\alpha}_{123}-2{\cdot}
 \end{tabular}
 \end{center}
 \end{table}
-
+\newpage
 So, calling \texttt{x.groupTerms();} has done a lot of the grunt-work of performing commutators and creating group elements from our original $X$.
 
 \subsection{Performing a commutator}
 
-Let's look at the \texttt{Anharmonic Notes (1).pdf} that you sent me, dated February 24, 2016, via email on Feb 25th. On Page 10, about halfway down, you show an operator $X$, (which I'll call $Y$), given by, for clarity here:
+Let's look at the \texttt{Anharmonic Notes (1).pdf} that you sent me, dated February 24, 2016, via email on Feb 25th. On Page 10, about halfway down, you show an operator $X$, (which I'll call $Y$, for clarity here), given by:
 \newline
 \newline
 $Y$ = $\lambda(\alpha_{20}L_0^2 + \alpha_{31}L_1^3 + \alpha_{40}L_0^4) + \lambda^2(\beta_{20}L_0^2 + \beta_{31}L_1^3 + \beta_{40}L_0^4 +\beta_{42}L_2^4 + \beta_{60}L_0^6)$
